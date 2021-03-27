@@ -22,7 +22,7 @@ data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 
 factors = []
 products = []
 
-#down
+#TO-DO: One function to rule them all
 def down(i_value, j_value):
     product = 1
     i = i_value
@@ -35,54 +35,6 @@ def down(i_value, j_value):
         product *= data[i][j]
         print(product)
         i += 1
-    factors.append(factorslist)
-    products.append(product)
-
-#right
-def right(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        j += 1
-    factors.append(factorslist)
-    products.append(product)
-
-#left
-def left(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        j -= 1
-    factors.append(factorslist)
-    products.append(product)
-
-#up
-def up(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i -= 1
     factors.append(factorslist)
     products.append(product)
 
@@ -103,89 +55,10 @@ def toprightdiag(i_value, j_value):
     factors.append(factorslist)
     products.append(product)
 
-#bottom right diagonal
-def bottomrightdiag(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i += 1
-        j -= 1
-    factors.append(factorslist)
-    products.append(product)
-
-#bottom left diagonal
-def bottomleftdiag(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i -= 1
-        j -= 1
-    factors.append(factorslist)
-    products.append(product)
-
-#top left diagonal
-def topleftdiag(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i -= 1
-        j += 1
-    factors.append(factorslist)
-    products.append(product)
-
-# down(0,0)
-# right(0,0)
-# left(0,19)
-# up(19,0)
-
 #iterates through all possible starting points for down()
 for i in range(0,15):
     for j in range(0,19):
         down(i,j)
-
-#iterates through all possible starting points for right()
-for i in range(0,19):
-    for j in range(0,15):
-        right(i,j)
-
-#iterates through all possible starting points for left()
-for i in range(0,19):
-    for j in range(3,19):
-        left(i,j)
-
-#iterates through all possible starting points for up()
-for i in range(3, 19):
-    for j in range(0,19):
-        up(i,j)
-
-# # iterates through all possible starting points for diagonals:
-# for i in range(0,19):
-#     for j in range(0,19):
-#         topleftdiag(i,j)
-#         toprightdiag(i,j)
-#         bottomleftdiag(i,j)
-#         bottomrightdiag(i,j)
 
 
 print(factors)
