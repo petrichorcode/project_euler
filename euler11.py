@@ -86,6 +86,74 @@ def up(i_value, j_value):
     factors.append(factorslist)
     products.append(product)
 
+#top right diagonal
+def toprightdiag(i_value, j_value):
+    product = 1
+    i = i_value
+    j = j_value
+    count = 0
+    factorslist = []
+    while count < 4:
+        count += 1
+        factorslist.append(data[i][j])
+        product *= data[i][j]
+        print(product)
+        i += 1
+        j += 1
+    factors.append(factorslist)
+    products.append(product)
+
+#bottom right diagonal
+def bottomrightdiag(i_value, j_value):
+    product = 1
+    i = i_value
+    j = j_value
+    count = 0
+    factorslist = []
+    while count < 4:
+        count += 1
+        factorslist.append(data[i][j])
+        product *= data[i][j]
+        print(product)
+        i += 1
+        j -= 1
+    factors.append(factorslist)
+    products.append(product)
+
+#bottom left diagonal
+def bottomleftdiag(i_value, j_value):
+    product = 1
+    i = i_value
+    j = j_value
+    count = 0
+    factorslist = []
+    while count < 4:
+        count += 1
+        factorslist.append(data[i][j])
+        product *= data[i][j]
+        print(product)
+        i -= 1
+        j -= 1
+    factors.append(factorslist)
+    products.append(product)
+
+#top left diagonal
+def topleftdiag(i_value, j_value):
+    product = 1
+    i = i_value
+    j = j_value
+    count = 0
+    factorslist = []
+    while count < 4:
+        count += 1
+        factorslist.append(data[i][j])
+        product *= data[i][j]
+        print(product)
+        i -= 1
+        j += 1
+    factors.append(factorslist)
+    products.append(product)
+
 # down(0,0)
 # right(0,0)
 # left(0,19)
@@ -110,6 +178,15 @@ for i in range(0,19):
 for i in range(3, 19):
     for j in range(0,19):
         up(i,j)
+
+# # iterates through all possible starting points for diagonals:
+# for i in range(0,19):
+#     for j in range(0,19):
+#         topleftdiag(i,j)
+#         toprightdiag(i,j)
+#         bottomleftdiag(i,j)
+#         bottomrightdiag(i,j)
+
 
 print(factors)
 print(products)
