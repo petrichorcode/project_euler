@@ -20,50 +20,44 @@ data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 
         [1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48]]
 
 factors = []
-products = []
-
+checks = []
 #TO-DO: One function to rule them all
-def down(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i += 1
-    factors.append(factorslist)
-    products.append(product)
-
-#top right diagonal
-def toprightdiag(i_value, j_value):
-    product = 1
-    i = i_value
-    j = j_value
-    count = 0
-    factorslist = []
-    while count < 4:
-        count += 1
-        factorslist.append(data[i][j])
-        product *= data[i][j]
-        print(product)
-        i += 1
-        j += 1
-    factors.append(factorslist)
-    products.append(product)
+def multiply_adjacent(row, col):
+    actions = [
+        { 'direction': 'left'  ,'row_inc':  0 ,'col_inc':  3 },
+        { 'direction': 'right' ,'row_inc':  0 ,'col_inc': -3 },
+        { 'direction': 'down'  ,'row_inc':  3 ,'col_inc':  0 },
+        { 'direction': 'up'    ,'row_inc': -3 ,'col_inc':  0 },
+        { 'direction': 'lrud'  ,'row_inc':  3 ,'col_inc':  3 },
+        { 'direction': 'lrdu'  ,'row_inc': -3 ,'col_inc':  3 },
+        { 'direction': 'rlud'  ,'row_inc':  3 ,'col_inc': -3 },
+        { 'direction': 'rldu'  ,'row_inc': -3 ,'col_inc': -3 }
+    ]
+    for a in actions:
+        product = 1
+        print(a['direction'])
+        while row <= (row + a['row_inc']):
+            while col <= (col + a['col_inc']):
+                try:
+                    product *= data[row][col]
+                except IndexError:
+                    product = None
+                col += 1
+            row += 1
+        checks.append({ 
+            'direction': a.direction, 
+            'row_index': row,
+            'column_index': col,
+            'product': product
+        })
 
 #iterates through all possible starting points for down()
-for i in range(0,15):
-    for j in range(0,19):
-        down(i,j)
+row_index = 0
+col_index = 0
+while row_index < len(data):
+    while col_index < len(data[row_index]):
+        multiply_adjacent(row_index,col_index)
+        col_index += 1
+    row_index += 1
 
-
-print(factors)
-print(products)
-
-print(max(products))
-print(products.index(max(products)))
-print(factors[products.index(max(products))])
+print(max(i for i in checks))
