@@ -1,3 +1,5 @@
+from math import copysign
+
 data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 8],
         [49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 4, 56, 62, 0],
         [81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30, 3, 49, 13, 36, 65],
@@ -19,45 +21,63 @@ data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 
         [20, 73, 35, 29, 78, 31, 90, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54],
         [1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48]]
 
-factors = []
-checks = []
-#TO-DO: One function to rule them all
-def multiply_adjacent(row, col):
+product_check = []
+show_messages = False
+
+def debug(msg):
+    if show_messages:
+        print(msg)
+
+def multiply_adjacent(row_start, col_start):
     actions = [
-        { 'direction': 'left'  ,'row_inc':  0 ,'col_inc':  3 },
-        { 'direction': 'right' ,'row_inc':  0 ,'col_inc': -3 },
-        { 'direction': 'down'  ,'row_inc':  3 ,'col_inc':  0 },
-        { 'direction': 'up'    ,'row_inc': -3 ,'col_inc':  0 },
-        { 'direction': 'lrud'  ,'row_inc':  3 ,'col_inc':  3 },
-        { 'direction': 'lrdu'  ,'row_inc': -3 ,'col_inc':  3 },
-        { 'direction': 'rlud'  ,'row_inc':  3 ,'col_inc': -3 },
-        { 'direction': 'rldu'  ,'row_inc': -3 ,'col_inc': -3 }
+        { 'name': 'left'  ,'row_inc':  0 ,'col_inc':  3, 'diag':False },
+        { 'name': 'right' ,'row_inc':  0 ,'col_inc': -3, 'diag':False },
+        { 'name': 'down'  ,'row_inc':  3 ,'col_inc':  0, 'diag':False },
+        { 'name': 'up'    ,'row_inc': -3 ,'col_inc':  0, 'diag':False },
+        { 'name': 'lrtd'  ,'row_inc':  3 ,'col_inc':  3, 'diag':True }, #Left to Right, Top down
+        { 'name': 'lrbu'  ,'row_inc': -3 ,'col_inc':  3, 'diag':True }, #Left to Right, Bottom up
+        { 'name': 'rltd'  ,'row_inc':  3 ,'col_inc': -3, 'diag':True }, #Right to Left, Top down
+        { 'name': 'rlbu'  ,'row_inc': -3 ,'col_inc': -3, 'diag':True }  #Right to Left, Bottom up
     ]
     for a in actions:
         product = 1
-        print(a['direction'])
-        while row <= (row + a['row_inc']):
-            while col <= (col + a['col_inc']):
+        row_inc, col_inc, is_diagonal = a['row_inc'], a['col_inc'], a['diag']
+        debug(a['name'])
+        
+        row = row_start
+        while row <= (row_start + row_inc):
+            col = col_start
+            while col <= (col_start + col_inc):
                 try:
+                    debug([row, col, data[row][col], a])
                     product *= data[row][col]
                 except IndexError:
-                    product = None
-                col += 1
-            row += 1
-        checks.append({ 
-            'direction': a.direction, 
-            'row_index': row,
-            'column_index': col,
-            'product': product
-        })
+                    product = 0
+                col += int(copysign(1,col_inc))
+                if is_diagonal: row += int(copysign(1,row_inc))
+            row += int(copysign(1,row_inc))
+        if product > 1:
+            product_check.append({ 
+                'direction': a['name'], 
+                'row_index': row_start,
+                'column_index': col_start,
+                'starting_number': data[row_start][col_start],
+                'product': product
+            })
 
-#iterates through all possible starting points for down()
+#iterates through all possible starting points for all directions
 row_index = 0
-col_index = 0
 while row_index < len(data):
+    col_index = 0
+    debug(['Row loop:',row_index,len(data)])
     while col_index < len(data[row_index]):
         multiply_adjacent(row_index,col_index)
         col_index += 1
     row_index += 1
 
-print(max(i for i in checks))
+#Return max product, starting point, and direction
+max_product = max(i['product'] for i in product_check)
+for i in product_check:
+    if i['product'] == max_product:
+        print('The max product of any 4 adjacent numbers in any direction is:')
+        print(i)
