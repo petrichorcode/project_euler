@@ -20,15 +20,16 @@ data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 
         [20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74, 4, 36, 16],
         [20, 73, 35, 29, 78, 31, 90, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54],
         [1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48]]
-
 product_check = []
-show_messages = False
+show_messages = True
+proceed = True
 
-def debug(msg):
+def debug(msg,indent=0):
     if show_messages:
-        print(msg)
+        print(' '*indent,msg)
 
 def multiply_adjacent(row_start, col_start):
+    global proceed
     actions = [
         { 'name': 'left'  ,'row_inc':  0 ,'col_inc':  3, 'diag':False },
         { 'name': 'right' ,'row_inc':  0 ,'col_inc': -3, 'diag':False },
@@ -41,36 +42,51 @@ def multiply_adjacent(row_start, col_start):
     ]
     for a in actions:
         product = 1
-        row_inc, col_inc, is_diagonal = a['row_inc'], a['col_inc'], a['diag']
-        debug(a['name'])
+        row_inc, col_inc, is_diagonal, direction = a['row_inc'], a['col_inc'], a['diag'], a['name']
+        debug({'direction':direction, 'row_start':row_start, 'col_start':col_start},5)
         
         row = row_start
-        while row <= (row_start + row_inc):
-            col = col_start
-            while col <= (col_start + col_inc):
-                try:
-                    debug([row, col, data[row][col], a])
-                    product *= data[row][col]
-                except IndexError:
-                    product = 0
-                col += int(copysign(1,col_inc))
-                if is_diagonal: row += int(copysign(1,row_inc))
-            row += int(copysign(1,row_inc))
-        if product > 1:
-            product_check.append({ 
-                'direction': a['name'], 
-                'row_index': row_start,
-                'column_index': col_start,
-                'starting_number': data[row_start][col_start],
-                'product': product
-            })
+        row_terminate = (row_start + row_inc)
+        debug([(row + row_inc) < len(data), row, row_inc, len(data)],15)
+        if row_terminate < len(data):
+            while row != row_terminate:
+                col = col_start
+                debug([(col + col_inc) < len(data[row]), col, col_inc, len(data[row])],20)
+                col_terminate = (col_start + col_inc)
+                if col_terminate < len(data[row]):
+                    while col != col_terminate or proceed is True:
+                        try:
+                            debug({'row':row, 'col':col, 'number':data[row][col], 'action':a},8)
+                            product *= data[row][col]
+                        except IndexError:
+                            debug([row,col,'out of bounds'])
+                            product = 0 
+                        #increment or decrement the counter depending on the direction 
+                        if proceed is False: col += int(copysign(1,col_inc))
+                        #if the direction is diagonal adjust the row count at the same time as the column
+                        if is_diagonal: row += int(copysign(1,row_inc))
+                        #Reset the row override 
+                        proceed = False
+                row += int(copysign(1,row_inc))
+                if row != row_terminate: proceed = True
+                #ignore invalid or tiny products
+                if product > 1:
+                    #record the product and where it started
+                    product_check.append({ 
+                        'direction': a['name'], 
+                        'row_index': row_start,
+                        'column_index': col_start,
+                        'starting_number': data[row_start][col_start],
+                        'product': product
+                    })
 
 #iterates through all possible starting points for all directions
-row_index = 0
-while row_index < len(data):
-    col_index = 0
-    debug(['Row loop:',row_index,len(data)])
-    while col_index < len(data[row_index]):
+row_index = 10
+while row_index < 11: #len(data):
+    col_index = 10
+    debug(['Row loop:',row_index,len(data)],1)
+    while col_index < 11: #len(data[row_index]):
+        debug(['Column loop:',col_index,len(data[row_index])],2)
         multiply_adjacent(row_index,col_index)
         col_index += 1
     row_index += 1
@@ -79,5 +95,6 @@ while row_index < len(data):
 max_product = max(i['product'] for i in product_check)
 for i in product_check:
     if i['product'] == max_product:
+        print('')
         print('The max product of any 4 adjacent numbers in any direction is:')
         print(i)
