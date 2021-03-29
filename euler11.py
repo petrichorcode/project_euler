@@ -22,7 +22,6 @@ data = [[8, 2, 22, 97, 38, 15, 00, 40, 00, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 
         [1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48]]
 product_check = []
 show_messages = True
-proceed = True
 
 def debug(msg,indent=0):
     if show_messages:
@@ -54,7 +53,9 @@ def multiply_adjacent(row_start, col_start):
                 debug([(col + col_inc) < len(data[row]), col, col_inc, len(data[row])],20)
                 col_terminate = (col_start + col_inc)
                 if col_terminate < len(data[row]):
-                    while col != col_terminate or proceed is True:
+                    loop_once = False
+                    while col != col_terminate or loop_once is False:
+                        loop_once = True
                         try:
                             debug({'row':row, 'col':col, 'number':data[row][col], 'action':a},8)
                             product *= data[row][col]
@@ -62,11 +63,10 @@ def multiply_adjacent(row_start, col_start):
                             debug([row,col,'out of bounds'])
                             product = 0 
                         #increment or decrement the counter depending on the direction 
-                        if proceed is False: col += int(copysign(1,col_inc))
+                        col += int(copysign(1,col_inc))
                         #if the direction is diagonal adjust the row count at the same time as the column
                         if is_diagonal: row += int(copysign(1,row_inc))
                         #Reset the row override 
-                        proceed = False
                 row += int(copysign(1,row_inc))
                 if row != row_terminate: proceed = True
                 #ignore invalid or tiny products
