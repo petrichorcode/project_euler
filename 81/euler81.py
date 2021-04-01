@@ -80,14 +80,47 @@ data = [[4445,2697,5115,718,2209,2212,654,4348,3079,6821,7668,3276,8874,4190,378
 [5304,5499,564,2801,679,2653,1783,3608,7359,7797,3284,796,3222,437,7185,6135,8571,2778,7488,5746,678,6140,861,7750,803,9859,9918,2425,3734,2698,9005,4864,9818,6743,2475,132,9486,3825,5472,919,292,4411,7213,7699,6435,9019,6769,1388,802,2124,1345,8493,9487,8558,7061,8777,8833,2427,2238,5409,4957,8503,3171,7622,5779,6145,2417,5873,5563,5693,9574,9491,1937,7384,4563,6842,5432,2751,3406,7981]]
 
 print(data)
-anchors = []
-y_index = 0
-x_index = 0
-for row in data:
-    y_index += 1
-    x_index = 0
-    for num in row:
-        x_index += 1
-        if num < 1000:
-            anchors.extend([x_index, y_index])
-            print(num, x_index, y_index)
+
+#sample_size defines a sample_size x sample_size square. sample_size needs to be a factor of 80.
+sample_size = 5
+compression_factor = int(80/sample_size)
+average_values = []
+def smoother(i_value, j_value):
+    i_start_point, j_start_point, sum, average = i_value,j_value,0,0
+    for i in range (i_start_point, i_start_point + sample_size):
+        for j in range(j_start_point, j_start_point + sample_size):
+            sum += data[i][j]
+            print(sum)
+    #get the average
+    average = sum/sample_size**2
+    average_values.append(average)
+    print(average)
+
+def make_square_matrix(iterable):
+    i = 0
+    reduced_matrix = []
+    while i < len(iterable):
+        reduced_matrix.append(iterable[i:i+compression_factor])
+        i += compression_factor
+    print(reduced_matrix)
+    return reduced_matrix
+
+def minimiser(iterable):
+    #finds minimum of all values generated from path generator
+    pass
+
+def path_generator(iterable):
+    i_0, j_0 = 0,0
+    #recursive algorithm to generate all paths
+    
+# smoothes the matrix into a list of sample_size x sample_size averages
+for i in range(0,80, sample_size):
+    for j in range(0,80, sample_size):
+        smoother(i,j)
+# turns the list of sample_size x sample_size averages into a square list of lists
+make_square_matrix(average_values)
+# finds the minimum path through the smoothed-out matrix
+
+    
+
+
